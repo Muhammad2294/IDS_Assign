@@ -1,0 +1,46 @@
+# 17 Sept 2023
+# CSC461 – Assignment1 – Web Scraping
+# Mohammad Ahmed Shahbaz
+# Fa21_bse_050
+# Extracted data(Title and rating) of 5 movies from IMDB Web 
+
+
+import requests
+from bs4 import BeautifulSoup
+import time
+import pandas as pd
+
+# Define a list of movie URLs
+url = [
+    'https://www.imdb.com/title/tt0133093/', 'https://www.imdb.com/title/tt1197624/?ref_=nv_sr_srsg_0_tt_8_nm_0_q_law%2520abidi','https://www.imdb.com/title/tt0114369/?ref_=hm_tpks_tt_t_2_pd_tp1_pbr_ic','https://www.imdb.com/title/tt0102926/?ref_=hm_tpks_tt_t_4_pd_tp1_pbr_ic','https://www.imdb.com/title/tt0816692/?ref_=hm_tpks_tt_t_6_pd_tp1_pbr_ic'
+]
+
+
+titles = []
+ratings = []
+
+
+for url in url:
+
+    page = requests.get(url)
+    
+    
+    soup = BeautifulSoup(page.content, 'html.parser')
+    
+    
+    title = soup.find('h1')
+    titles.append(title)
+    
+    
+    rating = soup.find('span', itemprop='ratingValue').text.strip()
+    ratings.append(rating)
+    
+   
+    time.sleep(1)
+
+
+df = pd.DataFrame({'Title': titles})
+
+
+
+df.to_excel('Fa21-bse-050.xlsx', index=False)
