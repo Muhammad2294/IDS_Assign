@@ -1,0 +1,48 @@
+# 17 Sept 2023
+# CSC461 – Assignment1 – Web Scraping
+# Mohammad Ahmed Shahbaz
+# Fa21_bse_050
+# Extracted data(Title and rating) of 5 movies from IMDB Web 
+
+
+
+
+import requests
+from bs4 import BeautifulSoup
+
+birthdate = "november-9"
+
+
+timeanddate_url = f"https://www.timeanddate.com/on-this-day/{birthdate}"
+
+
+britannica_url = f"https://www.britannica.com/on-this-day/{birthdate}"
+
+
+def get_timeanddate_data(url):
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    events = soup.find_all(class_="otd-event")
+    return [event.text.strip() for event in events]
+
+
+def get_britannica_data(url):
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, 'html.parser')
+    events = soup.find_all(class_="event-item")
+    return [event.text.strip() for event in events]
+
+
+timeanddate_data = get_timeanddate_data(timeanddate_url)
+
+britannica_data = get_britannica_data(britannica_url)
+
+with open("birth_events.txt", "w") as file:
+    file.write("Events from timeanddate:\n")
+    for event in timeanddate_data:
+        file.write(f"- {event}\n")
+    file.write("\nEvents from britannica:\n")
+    for event in britannica_data:
+        file.write(f"- {event}\n")
+
+print("Data Written in the file successfully")
